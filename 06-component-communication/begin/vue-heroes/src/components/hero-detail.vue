@@ -98,10 +98,10 @@ export default {
   },
   methods: {
     cancelHero() {
-      //lpace hiolder
+      this.$$emit('cancel');
     },
     saveHero() {
-      //lpace hiolder
+      this.$emit('save', this.clonedHero);
     },
     handleTheCapes(newValue) {
       const value = parseInt(newValue, 10);
