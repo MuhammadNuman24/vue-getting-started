@@ -31,8 +31,8 @@
           <!-- <heroes-list> -->
 
           <!-- <hero-detail> -->
-          <heroDetail />
-          <div v-if="selectedHero">
+          <HeroDetail v-if="selectedHero" :hero="selectedHero" />
+          <div>
             <div class="card">
               <header class="card-header">
                 <p class="card-header-title">{{ fullName }}</p>
