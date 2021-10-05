@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 <template>
   <div class="content-container">
     <div class="section content-title-group">
@@ -27,7 +28,7 @@
       <div class="column is-4" v-if="selectedHero">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">{{ selectedHero.firstName }}</p>
+            <p class="card-header-title">{{ FullName }}</p>
           </header>
           <div class="card-content">
             <div class="content">
@@ -61,13 +62,38 @@
                   v-model="selectedHero.description"
                 />
               </div>
+              <div class="field">
+                <label class="label" for="capeCounter">Cape Counter</label>
+                <input
+                  class="input"
+                  id="capeCounter"
+                  type="number"
+                  v-model="selectedHero.capeCounter"
+                />
+              </div>
+                  <div class="field">
+                <label class="label" for="origindate">Origin Date</label>
+                <input
+                  class="input"
+                  id="origindate"
+                  type="date"
+                  v-model="selectedHero.origindate"
+                />
+                <p class="comment">Here is my origin date{{selectedHero.origindate | shortdate}}</p>
+              </div>
+              <div class="field">
+                <label class="label" for="capeMessage">cape message</label>
+                <label class="input" name="capeMessage">{{
+                  capeMessage
+                  }}<label>   
+           </div>
+           <div>
             </div>
-          </div>
+         <div>
           <footer class="card-footer">
             <button
               class="link card-footer-item cancel-button"
-              @click="cancelHero()"
-            >
+              @click="cancelHero()">
               <i class="fas fa-undo"></i>
               <span>Cancel</span>
             </button>
@@ -77,41 +103,75 @@
             </button>
           </footer>
         </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
+import {format} from 'date-fns';
+
+const inputDateformat = 'YYYY,MM,DD';
+const dateFormat='mmm,dd,yyyy';
+
 const ourHeroes = [
   {
     id: 10,
     firstName: 'Ella',
-    lastName: 'Papa',
+   origindate: format(new Date (1996,11,9), inputDateformat), 
     description: 'fashionista',
+    capeMessage: ' ',
   },
   {
     id: 20,
     firstName: 'Madelyn',
-    lastName: 'Papa',
+   origindate: format(new Date (1998 ,10, 9), inputDateformat),
     description: 'the cat whisperer',
+    capeMessage: ' ',
   },
   {
     id: 30,
     firstName: 'Haley',
-    lastName: 'Papa',
+    origindate: format(new Date (1997 ,7, 9),inputDateformat),
     description: 'pen wielder',
+    capeMessage: ' ',
   },
   {
     id: 40,
     firstName: 'Landon',
-    lastName: 'Papa',
+    origindate: format(new Date(1999, 1 ,9),inputDateformat),
     description: 'arc trooper',
+    capeMessage: ' ',
   },
 ];
+
 export default {
   name: 'Heroes',
+  data() {
+    return {
+      heroes: [],
+      selectedHero: undefined,
+      message: ' ',
+    };
+  },
+  computed: {
+    FullName() {
+      return `${this.selectedHero.firstName} ${this.selectedHero.lastName}`;
+    },
+  },
+  created() {
+    this.loadHeroes();
+  },
   methods: {
+    async getHeroes() {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(ourHeroes), 1500);
+      });
+    },
+    async loadHeroes() {
+      this.heroes = [];
+      this.message = 'Getting the heroes.please be patient';
+      this.heroes = await this.getHeroes();
+      this.message = '';
+    },
     handleTheCapes(newValue) {
       const value = parseInt(newValue, 10);
       switch (value) {
@@ -134,12 +194,25 @@ export default {
       this.message = '';
     },
     saveHero() {
-      // This only updates when you click the save button
       this.message = JSON.stringify(this.selectedHero, null, '\n ');
     },
     selectHero(hero) {
       this.selectedHero = hero;
     },
   },
+  watch: {
+    'selectedHero.capeCounter' :{
+      immediate:true,
+    handler(newValue, oldValue) {
+      console.log(`Watcher evaluated. old=${oldValue} , new=${newValue}`)
+      this.handleTheCapes(newValue)
+    }
+    }
+  },
+  filters: {
+    shortdate: function(value) {
+      return  format(value , dateFormat)
+    }
+  }
 };
 </script>

@@ -31,6 +31,7 @@
           <!-- <heroes-list> -->
 
           <!-- <hero-detail> -->
+          <heroDetail />
           <div v-if="selectedHero">
             <div class="card">
               <header class="card-header">
@@ -126,9 +127,11 @@
 import { format } from 'date-fns';
 
 import { displayDateFormat, ourHeroes } from '../shared';
+import HeroDetail from '@/components/hero-detail';
 
 export default {
   name: 'Heroes',
+  components: { HeroDetail },
   data() {
     return {
       heroes: [],
