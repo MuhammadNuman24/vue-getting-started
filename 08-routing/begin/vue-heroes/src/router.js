@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import About from './views/about';
+import PageNotFound from './views/page-not-found';
 
 Vue.use(Router);
+const parseProps = r => ({ id: parseInt(r.params.id) });
 
 export default new Router({
   mode: 'history',
@@ -10,17 +12,29 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      redirect: 'heroes',
+    },
+    {
+      path: '/heroes',
+      name: '/heroes',
+      component: () =>
+        import(/* webpackChunkName: "heroes" */ './views/heroes.vue'),
+    },
+    {
+      path: '/heroes/:id',
+      name: 'hero-detail',
+      component: () =>
+        import(/* webpackChunkName: "hero-detail" */ './views/hero-detail.vue'),
+      props: parseProps,
     },
     {
       path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ './views/About.vue'),
+      name: '/about',
+      component: About,
+    },
+    {
+      path: '',
+      component: PageNotFound,
     },
   ],
 });
